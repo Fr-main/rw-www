@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RemixWarp · 重构自由度</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #0b0e14;
+            overflow-y: auto;
+            overflow-x: hidden;
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #e8edf5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background 0.5s ease, color 0.5s ease;
+        }
+
+        body.light-mode {
+            background: #f0f2f5;
+            color: #1a1d23;
+        }
+
+        body.light-mode .slogan {
+            color: rgba(26, 29, 35, 0.6);
+        }
+
+        body.light-mode .showcase-item {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+
+        body.light-mode .showcase-item:hover {
+            background: rgba(0, 0, 0, 0.06);
+        }
+
+        body.light-mode .showcase-item h4 {
+            color: rgba(26, 29, 35, 0.8);
+        }
+
+        body.light-mode .showcase-item p {
+            color: rgba(26, 29, 35, 0.4);
+        }
+
+        body.light-mode .showcase-title {
+            color: rgba(26, 29, 35, 0.3);
+        }
+
+        body.light-mode .showcase-section {
+            border-top-color: rgba(0, 0, 0, 0.08);
+        }
+
+        body.light-mode .footer {
+            border-top-color: rgba(0, 0, 0, 0.06);
+        }
+
+        body.light-mode .footer-copy {
+            color: rgba(26, 29, 35, 0.15);
+        }
+
+        body.light-mode .theme-toggle {
+            background: rgba(0, 0, 0, 0.06);
+            border-color: rgba(0, 0, 0, 0.08);
+            color: #1a1d23;
+        }
+
+        body.light-mode .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .logo-text-svg {
+            filter: drop-shadow(0 0 30px rgba(0, 0, 0, 0.06));
+        }
+
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .main-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1200px;
+            padding: 2rem 1.5rem 4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            justify-content: space-between;
+        }
+
+        /* 左上角图标 */
+        .top-left-icon {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            z-index: 10;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .top-left-icon svg {
+            width: 40px;
+            height: auto;
+            display: block;
+            transition: all 0.5s ease;
+        }
+
+        .top-left-icon svg path {
+            stroke: #ffffff;
+            transition: stroke 0.5s ease;
+        }
+
+        body.light-mode .top-left-icon svg path {
+            stroke: #000000;
+        }
+
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 75vh;
+            width: 100%;
+            text-align: center;
+            user-select: none;
+            flex: 1;
+        }
+
+        .logo-text-svg {
+            width: clamp(300px, 65vw, 750px);
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.04));
+            transition: transform 0.3s ease, filter 0.5s ease;
+        }
+
+        .slogan {
+            margin-top: 1.2rem;
+            font-size: clamp(1rem, 2.5vw, 1.8rem);
+            font-weight: 300;
+            letter-spacing: 0.35em;
+            color: rgba(232, 237, 245, 0.55);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.04);
+            transition: color 0.5s ease;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e8edf5;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.14);
+            transform: scale(1.05);
+        }
+
+        .theme-toggle svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        body.light-mode .theme-toggle {
+            background: rgba(0, 0, 0, 0.06);
+            border-color: rgba(0, 0, 0, 0.08);
+            color: #1a1d23;
+        }
+
+        body.light-mode .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .showcase-section {
+            width: 100%;
+            max-width: 820px;
+            margin: 2rem auto;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            transition: border-color 0.5s ease;
+        }
+
+        .showcase-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: rgba(255, 255, 255, 0.2);
+            font-weight: 400;
+            transition: color 0.5s ease;
+        }
+
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+            width: 100%;
+        }
+
+        .showcase-item {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 1.2rem;
+            padding: 1.5rem 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .showcase-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateY(-2px);
+        }
+
+        .showcase-item .icon {
+            display: block;
+            margin-bottom: 0.6rem;
+            width: 32px;
+            height: 32px;
+            margin-left: auto;
+            margin-right: auto;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0.7;
+            color: rgba(232, 237, 245, 0.7);
+        }
+
+        body.light-mode .showcase-item .icon {
+            color: rgba(26, 29, 35, 0.6);
+        }
+
+        .showcase-item h4 {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: rgba(232, 237, 245, 0.7);
+            letter-spacing: 0.02em;
+            transition: color 0.5s ease;
+        }
+
+        .showcase-item p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.25);
+            margin-top: 0.2rem;
+            font-weight: 300;
+            transition: color 0.5s ease;
+        }
+
+        .footer {
+            width: 100%;
+            max-width: 820px;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.2rem;
+            transition: border-color 0.5s ease;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.8rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.3);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            transition: color 0.3s ease, transform 0.3s ease;
+            position: relative;
+        }
+
+        .footer-links a:hover {
+            color: rgba(255, 255, 255, 0.7);
+            transform: translateY(-1px);
+        }
+
+        .footer-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: currentColor;
+            transition: width 0.3s ease;
+        }
+
+        .footer-links a:hover::after {
+            width: 100%;
+        }
+
+        body.light-mode .footer-links a {
+            color: rgba(26, 29, 35, 0.3);
+        }
+
+        body.light-mode .footer-links a:hover {
+            color: rgba(26, 29, 35, 0.7);
+        }
+
+        .footer-copy {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.12);
+            letter-spacing: 0.1em;
+            font-weight: 300;
+            transition: color 0.5s ease;
+        }
+
+        @media (max-width: 600px) {
+            .main-wrapper {
+                padding: 1.5rem 1rem 3rem;
+            }
+            .hero-section {
+                min-height: 65vh;
+            }
+            .top-left-icon {
+                top: 1rem;
+                left: 1rem;
+                width: 36px;
+                height: 36px;
+            }
+            .top-left-icon svg {
+                width: 30px;
+            }
+            .showcase-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .theme-toggle {
+                top: 1rem;
+                right: 1rem;
+                width: 42px;
+                height: 42px;
+            }
+            .theme-toggle svg {
+                width: 20px;
+                height: 20px;
+            }
+            .footer-links {
+                gap: 1.2rem;
+            }
+            .footer-links a {
+                font-size: 0.7rem;
+            }
+        }
+        @media (max-width: 400px) {
+            .showcase-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- 左上角图标 -->
+    <div class="top-left-icon">
+        <svg viewBox="0,0,170.38863,106.16187" height="106.16187" width="170.38863" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" version="1.1">
+            <g transform="translate(-159.03125,-119.82487)">
+                <g stroke-miterlimit="10" stroke-width="10" stroke="#000000" fill="none">
+                    <path d="M323.02402,220.98675h-158.99277v-96.16187h123.91979"></path>
+                    <path d="M326.21985,221.58158l-68.64555,-57.17758l34.09391,-40.93205"></path>
+                    <path d="M186.95539,176.70914v-23.41156"></path>
+                    <path d="M214.20947,176.39211v-23.41155"></path>
+                </g>
+            </g>
+        </svg>
+    </div>
+
+    <!-- 主题切换按钮 -->
+    <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+        <svg id="moonIcon" viewBox="0 0 24 24">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg id="sunIcon" viewBox="0 0 24 24" style="display: none;">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+    </button>
+
+    <div class="main-wrapper">
+
+        <section class="hero-section">
+            <!-- 文字标识 - 你第一个提供的SVG -->
+            <svg class="logo-text-svg" id="logoSvg" viewBox="0,0,550.57654,60.66696" height="60.66696" width="550.57654" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" version="1.1">
+                <g transform="translate(45.66745,-152.12946)">
+                    <g stroke-miterlimit="10" stroke-width="5" stroke="#000000" fill="none">
+                        <g stroke-linecap="butt">
+                            <path d="M312.40583,157.28449v41.04757c0,6.35436 -4.48065,11.50558 -10.00781,11.50558h-10.70719c-5.52716,0 -10.00781,-5.15123 -10.00781,-11.50558v-33.76167"></path>
+                            <path d="M281.80244,164.66336v33.76167c0,6.35435 -4.48065,11.50558 -10.00781,11.50558h-10.70719c-5.52716,0 -10.00781,-5.15122 -10.00781,-11.50558v-41.04757"></path>
+                            <path d="M353.87823,173.04808h24.43164c5.84596,0 10.58505,4.73909 10.58505,10.58505v16.7538"></path>
+                            <path d="M372.84464,209.3346h-24.43164c-5.84596,0 -10.58505,-5.51007 -10.58505,-12.30707l0.76909,-26.18943"></path>
+                            <path d="M405.18643,210.29642h-5.81992c-5.84596,0 -10.58505,-4.73909 -10.58505,-10.58505v-16.7538"></path>
+                            <path d="M465.86204,175.65663v-1.28145c0,-5.21675 4.22902,-9.44577 9.44577,-9.44577h17.65551c5.21675,0 9.44577,4.22902 9.44577,9.44577v11.66535c0,5.21675 -4.22902,9.44577 -9.44577,9.44577h-17.65551c-5.21675,0 -9.44577,-4.22902 -9.44577,-9.44577v-0.93812"></path>
+                            <path d="M465.59064,211.39112l0.34205,-26.48995"></path>
+                            <path d="M429.73057,212.02936v-33.2198c0,-5.52284 4.47715,-10 10,-10h7.34288"></path>
+                        </g>
+                        <g>
+                            <path stroke-linecap="butt" d="M-45.66745,154.62946h28.5483c7.30561,0 13.22797,5.51014 13.22797,12.30725v9.41778c0,6.79711 -5.92237,12.30725 -13.22797,12.30725h-28.49632"></path>
+                            <path stroke-linecap="round" d="M-17.42945,189.47804l11.02902,19.8323"></path>
+                            <path stroke-linecap="butt" d="M20.82834,188.83424c-4.57663,0 -8.28672,-3.71009 -8.28672,-8.28672v-6.92068c0,-4.57663 3.71009,-8.28672 8.28672,-8.28672c0,0 10.94906,0 15.69074,0c3.9315,0 10.78689,0 10.78689,0c4.57663,0 8.28672,3.71009 8.28672,8.28672v6.92068c0,4.57663 -3.71009,8.28672 -8.28672,8.28672z"></path>
+                            <path stroke-linecap="butt" d="M57.11113,209.18126c-0.37296,0.03168 -0.75032,0.04783 -1.13142,0.04783h-30.12162c-7.33246,0 -13.2766,-5.98238 -13.2766,-13.36204v-14.5591"></path>
+                            <path stroke-linecap="butt" d="M76.22474,212.12422v-33.76167c0,-6.35435 4.48065,-11.50558 10.00781,-11.50558h10.70719c5.52716,0 10.00781,5.15122 10.00781,11.50558v33.5962"></path>
+                            <path stroke-linecap="butt" d="M107.20647,212.16393v-33.76167c0,-6.35435 4.48065,-11.50558 10.00781,-11.50558h10.70719c5.52716,0 10.00781,5.15122 10.00781,11.50558v33.5962"></path>
+                            <path stroke-linecap="butt" d="M182.94413,168.61588h14.51045c5.72382,0 10.3639,4.14465 10.3639,9.25733v22.20016c0,5.11268 -4.64008,9.25733 -10.3639,9.25733h-15.52652"></path>
+                            <path stroke-linecap="butt" d="M233.64629,209.58504h-15.52652c-5.72382,0 -10.3639,-4.14465 -10.3639,-9.25733v-22.20016c0,-5.11268 4.64008,-9.25733 10.3639,-9.25733h14.51045"></path>
+                            <path stroke-linecap="butt" d="M149.96924,173.93154h14.80402v38.10274"></path>
+                            <path stroke-linecap="butt" d="M154.1821,157.88954h14.73648"></path>
+                        </g>
+                    </g>
+                </g>
+            </svg>
+
+            <div class="slogan">重构自由度</div>
+        </section>
+
+        <section class="showcase-section">
+            <div class="showcase-title">✦ 特性预览 ✦</div>
+            <div class="showcase-grid">
+                <div class="showcase-item">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                        <polyline points="17 6 23 6 23 12"/>
+                    </svg>
+                    <h4>极速编译</h4>
+                    <p>Scratch → JavaScript</p>
+                </div>
+                <div class="showcase-item">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    <h4>完美兼容</h4>
+                    <p>导入官网作品</p>
+                </div>
+                <div class="showcase-item">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                    </svg>
+                    <h4>插件生态</h4>
+                    <p>内置扩展分类</p>
+                </div>
+                <div class="showcase-item">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                    <h4>在线可用</h4>
+                    <p>无需安装</p>
+                </div>
+                <div class="showcase-item">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <h4>实时预览</h4>
+                    <p>所见即所得</p>
+                </div>
+                <div class="showcase-item">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    <h4>一键导出</h4>
+                    <p>多格式支持</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <div class="footer-links">
+                <a href="https://remixwarp.pages.dev/" target="_blank" rel="noopener noreferrer">编辑器</a>
+                <a href="https://github.com/remixwarp" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </div>
+            <div class="footer-copy">RemixWarp · 重构自由度</div>
+        </footer>
+
+    </div>
+
+    <script>
+        (function() {
+            // ---- 粒子背景 ----
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let particles = [];
+            const PARTICLE_COUNT = 70;
+            const COLOR = '#75c1c4';
+            const MAX_SPEED = 1.4;
+            const MIN_SPEED = 0.3;
+            const MAX_RADIUS = 4.0;
+            const MIN_RADIUS = 1.2;
+            const LIFE_SPAN = 200;
+
+            function resize() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+                initParticles(true);
+            }
+
+            class Particle {
+                constructor(init = false) {
+                    this.reset(init);
+                }
+
+                reset(init = false) {
+                    const centerX = width / 2;
+                    const centerY = height / 2;
+                    const spread = 40;
+                    this.x = centerX + (Math.random() - 0.5) * spread;
+                    this.y = centerY + (Math.random() - 0.5) * spread;
+
+                    const angle = Math.random() * 2 * Math.PI;
+                    const speed = MIN_SPEED + Math.random() * (MAX_SPEED - MIN_SPEED);
+                    this.vx = Math.cos(angle) * speed;
+                    this.vy = Math.sin(angle) * speed;
+
+                    this.radius = MIN_RADIUS + Math.random() * (MAX_RADIUS - MIN_RADIUS);
+                    this.life = init ? Math.floor(Math.random() * LIFE_SPAN) : 0;
+                    this.maxLife = LIFE_SPAN + Math.floor(Math.random() * 50);
+                }
+
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    this.vx += (Math.random() - 0.5) * 0.03;
+                    this.vy += (Math.random() - 0.5) * 0.03;
+                    const sp = Math.hypot(this.vx, this.vy);
+                    if (sp > MAX_SPEED * 1.6) {
+                        this.vx = (this.vx / sp) * MAX_SPEED * 1.2;
+                        this.vy = (this.vy / sp) * MAX_SPEED * 1.2;
+                    }
+
+                    this.life++;
+                    const margin = 120;
+                    if (this.life > this.maxLife ||
+                        this.x < -margin || this.x > width + margin ||
+                        this.y < -margin || this.y > height + margin) {
+                        this.reset(false);
+                    }
+                }
+
+                draw() {
+                    const progress = this.life / this.maxLife;
+                    let alpha;
+                    if (progress < 0.15) {
+                        alpha = progress / 0.15;
+                    } else {
+                        alpha = 1 - (progress - 0.15) / 0.85;
+                    }
+                    alpha = Math.min(1, Math.max(0, alpha)) * 0.8;
+
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = COLOR;
+                    ctx.globalAlpha = alpha;
+                    ctx.fill();
+                    if (this.radius > 2.5) {
+                        ctx.shadowColor = COLOR;
+                        ctx.shadowBlur = 8;
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
+                    ctx.globalAlpha = 1.0;
+                }
+            }
+
+            function initParticles(forceReset = false) {
+                if (forceReset || particles.length === 0) {
+                    particles = [];
+                    for (let i = 0; i < PARTICLE_COUNT; i++) {
+                        particles.push(new Particle(true));
+                    }
+                }
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                for (let p of particles) {
+                    p.update();
+                    p.draw();
+                }
+                requestAnimationFrame(animate);
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+            animate();
+
+            // ---- 主题切换功能 ----
+            const toggleBtn = document.getElementById('themeToggle');
+            const moonIcon = document.getElementById('moonIcon');
+            const sunIcon = document.getElementById('sunIcon');
+            const body = document.body;
+
+            // 获取左上角图标和文字SVG
+            const topIconSvg = document.querySelector('.top-left-icon svg');
+            const textLogoSvg = document.getElementById('logoSvg');
+
+            function updateSvgColors(isLightMode) {
+                const color = isLightMode ? '#000000' : '#ffffff';
+                
+                // 更新左上角图标
+                const iconPaths = topIconSvg.querySelectorAll('path');
+                iconPaths.forEach(path => {
+                    if (path.hasAttribute('stroke')) {
+                        path.setAttribute('stroke', color);
+                    }
+                });
+                const iconGroups = topIconSvg.querySelectorAll('g');
+                iconGroups.forEach(g => {
+                    if (g.hasAttribute('stroke')) {
+                        g.setAttribute('stroke', color);
+                    }
+                });
+
+                // 更新文字标识
+                const textPaths = textLogoSvg.querySelectorAll('path');
+                textPaths.forEach(path => {
+                    if (path.hasAttribute('stroke')) {
+                        path.setAttribute('stroke', color);
+                    }
+                });
+                const textGroups = textLogoSvg.querySelectorAll('g');
+                textGroups.forEach(g => {
+                    if (g.hasAttribute('stroke')) {
+                        g.setAttribute('stroke', color);
+                    }
+                });
+            }
+
+            let isLightMode = false;
+
+            function toggleTheme() {
+                isLightMode = !isLightMode;
+                
+                body.classList.toggle('light-mode', isLightMode);
+                updateSvgColors(isLightMode);
+                
+                if (isLightMode) {
+                    moonIcon.style.display = 'none';
+                    sunIcon.style.display = 'block';
+                } else {
+                    moonIcon.style.display = 'block';
+                    sunIcon.style.display = 'none';
+                }
+            }
+
+            toggleBtn.addEventListener('click', toggleTheme);
+            updateSvgColors(false);
+
+        })();
+    </script>
+
+</body>
+</html>
