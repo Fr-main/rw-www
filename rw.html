@@ -360,6 +360,23 @@
             transition: color 0.5s ease;
         }
 
+        .footer-random-quote {
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.2);
+            letter-spacing: 0.05em;
+            font-weight: 300;
+            font-style: italic;
+            text-align: center;
+            transition: color 0.5s ease;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        body.light-mode .footer-random-quote {
+            color: rgba(26, 29, 35, 0.25);
+        }
+
         @media (max-width: 600px) {
             .main-wrapper {
                 padding: 1.5rem 1rem 3rem;
@@ -536,6 +553,7 @@
                 <a href="https://remixwarp.pages.dev/" target="_blank" rel="noopener noreferrer">编辑器</a>
                 <a href="https://github.com/remixwarp" target="_blank" rel="noopener noreferrer">GitHub</a>
             </div>
+            <div class="footer-random-quote" id="randomQuote" title="点击换一条">rw大舞台，敢发你就来 — DL_Grass</div>
             <div class="footer-copy">RemixWarp · 重构自由度</div>
         </footer>
 
@@ -715,6 +733,37 @@
 
             toggleBtn.addEventListener('click', toggleTheme);
             updateSvgColors(false);
+
+            // ---- 随机语句功能 ----
+            const quotes = [
+                "rw大舞台，敢发你就来 — DL_Grass",
+                "美好作品火化冒烟，Bug首选重构跃迁 — 笑小朗",
+                "这里没有开发者，或者开发的都不是人 — DL_Grass",
+                "雷霆代码集体蹦迪，神秘作品鬼火漂移 — DL_Grass",
+                "重构跃迁，特别阴间 — 笑小朗",
+                "bug爆炸，说走就走 — DL_Grass",
+                "重构跃迁，法力无边 — 笑小朗",
+                "重构跃迁，游戏之巅 — 笑小朗",
+                "重构跃迁，抄袭无边 — 笑小朗",
+                "重构跃迁，抄袭为先 — 笑小朗",
+                "重构跃迁，制为先 — DL_Grass",
+                "重构跃迁，同步为先 — 勇敢的菠萝",
+                "喜欢吃屎的可以用rw — PPN-design"
+            ];
+
+            const quoteElement = document.getElementById('randomQuote');
+            let lastIndex = 0;
+
+            function showRandomQuote() {
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * quotes.length);
+                } while (newIndex === lastIndex && quotes.length > 1);
+                lastIndex = newIndex;
+                quoteElement.textContent = quotes[newIndex];
+            }
+
+            quoteElement.addEventListener('click', showRandomQuote);
 
         })();
     </script>
