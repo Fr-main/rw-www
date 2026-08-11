@@ -403,12 +403,12 @@
         .hardcore-panel {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 2rem;
+            justify-content: center;
             width: 100%;
         }
 
         .hardcore-image {
+            position: relative;
             flex: 0 0 auto;
             width: 75%;
             max-width: 750px;
@@ -425,27 +425,28 @@
             height: auto;
         }
 
-        .hardcore-icon {
-            flex: 1 1 auto;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-        }
-
-        .hardcore-icon svg {
-            width: 100%;
-            max-width: 560px;
+        /* 叠加在图片上方的 SVG */
+        .hardcore-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 520px;
             height: auto;
             display: block;
+            pointer-events: none;
             filter: drop-shadow(0 0 24px rgba(255, 255, 255, 0.05));
         }
 
-        .hardcore-icon svg path {
+        /* 默认（深色模式）：SVG 为浅色，与主题反向 */
+        .hardcore-overlay path {
             stroke: #ffffff;
             transition: stroke 0.5s ease;
         }
 
-        body.light-mode .hardcore-icon svg path {
+        /* 浅色模式：SVG 为深色，与主题反向 */
+        body.light-mode .hardcore-overlay path {
             stroke: #000000;
         }
 
@@ -462,7 +463,7 @@
             color: rgba(26, 29, 35, 0.3);
         }
 
-        body.light-mode .hardcore-icon svg {
+        body.light-mode .hardcore-overlay {
             filter: drop-shadow(0 0 24px rgba(0, 0, 0, 0.06));
         }
 
@@ -655,11 +656,9 @@
         <section class="hardcore-section">
             <div class="hardcore-title">✦ 硬核编辑 ✦</div>
             <div class="hardcore-panel">
-                <div class="hardcore-icon">
-                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200.01993" height="108.74116" viewBox="0,0,200.01993,108.74116"><g transform="translate(-140.65552,-125.53659)"><g fill="none" stroke="#ffffff" stroke-width="6.5" stroke-linejoin="bevel" stroke-miterlimit="10"><path d="M142.4176,147.50729h15.01588l-13.65079,48.23285"/><path d="M155.15835,163.88826h20.93124"/><path d="M188.12693,181.84096h-15.01588l13.65079,-48.23285"/><path d="M207.19595,154.78772l-7.73545,26.39156h22.75135"/><path d="M217.86822,154.08431h22.75135l-7.73545,26.39156l22.54467,0.24838"/><path d="M266.10107,184.1161l7.73545,-30.94183h22.75135"/><path d="M307.96355,154.53934l-7.73545,26.39156h22.75135"/><path d="M304.52999,157.47616h22.75135l-7.73545,26.39156"/><path d="M334.85224,154.746h-6.37038l9.10054,-28.21165"/><path d="M200.78387,202.97882l-7.73545,26.39156h22.75135"/><path d="M197.35031,205.91565h22.75135l-7.73545,26.39156"/><path d="M158.21799,203.18549l-7.73545,26.39156h22.75135"/><path d="M154.3294,206.12231h22.75135l-2.20941,6.89562"/><path d="M172.02098,224.93755l-2.22066,7.57632"/><path d="M235.36588,233.46565l7.28043,-28.21167h22.75135"/><path d="M284.01205,202.48208l-7.73545,26.39156h22.75135"/><path d="M280.12346,205.41891h22.75135l-2.20941,6.89562"/><path d="M301.57546,210.4242l-2.34087,6.89562h-21.38626"/></g></g></svg>
-                </div>
                 <div class="hardcore-image">
                     <img id="hardcoreImg" src="yhw.png" alt="硬核编辑预览" />
+                    <svg class="hardcore-overlay" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200.01993" height="108.74116" viewBox="0,0,200.01993,108.74116"><g transform="translate(-140.65552,-125.53659)"><g fill="none" stroke-width="6.5" stroke-linejoin="bevel" stroke-miterlimit="10"><path d="M142.4176,147.50729h15.01588l-13.65079,48.23285"/><path d="M155.15835,163.88826h20.93124"/><path d="M188.12693,181.84096h-15.01588l13.65079,-48.23285"/><path d="M207.19595,154.78772l-7.73545,26.39156h22.75135"/><path d="M217.86822,154.08431h22.75135l-7.73545,26.39156l22.54467,0.24838"/><path d="M266.10107,184.1161l7.73545,-30.94183h22.75135"/><path d="M307.96355,154.53934l-7.73545,26.39156h22.75135"/><path d="M304.52999,157.47616h22.75135l-7.73545,26.39156"/><path d="M334.85224,154.746h-6.37038l9.10054,-28.21165"/><path d="M200.78387,202.97882l-7.73545,26.39156h22.75135"/><path d="M197.35031,205.91565h22.75135l-7.73545,26.39156"/><path d="M158.21799,203.18549l-7.73545,26.39156h22.75135"/><path d="M154.3294,206.12231h22.75135l-2.20941,6.89562"/><path d="M172.02098,224.93755l-2.22066,7.57632"/><path d="M235.36588,233.46565l7.28043,-28.21167h22.75135"/><path d="M284.01205,202.48208l-7.73545,26.39156h22.75135"/><path d="M280.12346,205.41891h22.75135l-2.20941,6.89562"/><path d="M301.57546,210.4242l-2.34087,6.89562h-21.38626"/></g></g></svg>
                 </div>
             </div>
         </section>
