@@ -408,13 +408,19 @@
             const ctx = canvas.getContext('2d');
             let width, height;
             let particles = [];
-            const PARTICLE_COUNT = 70;
+            const PARTICLE_COUNT = 280;
             const COLOR = '#75c1c4';
             const MAX_SPEED = 1.4;
             const MIN_SPEED = 0.3;
             const MAX_RADIUS = 4.0;
             const MIN_RADIUS = 1.2;
-            const LIFE_SPAN = 200;
+            const LIFE_SPAN = 1000;
+
+            // 鼠标跟随
+            let mouseX = width ? width / 2 : window.innerWidth / 2;
+            let mouseY = height ? height / 2 : window.innerHeight / 2;
+            const MOUSE_RADIUS = 160;      // 鼠标影响范围
+            const MOUSE_PULL = 0.0016;     // 鼠标吸引强度
 
             function resize() {
                 width = window.innerWidth;
@@ -423,6 +429,15 @@
                 canvas.height = height;
                 initParticles(true);
             }
+
+            window.addEventListener('mousemove', function(e) {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+            window.addEventListener('mouseleave', function() {
+                mouseX = width / 2;
+                mouseY = height / 2;
+            });
 
             class Particle {
                 constructor(init = false) {
@@ -452,6 +467,17 @@
 
                     this.vx += (Math.random() - 0.5) * 0.03;
                     this.vy += (Math.random() - 0.5) * 0.03;
+
+                    // 鼠标跟随：在影响范围内向鼠标位置吸引
+                    const dx = mouseX - this.x;
+                    const dy = mouseY - this.y;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist < MOUSE_RADIUS && dist > 0.01) {
+                        const force = (1 - dist / MOUSE_RADIUS) * MOUSE_PULL;
+                        this.vx += dx * force;
+                        this.vy += dy * force;
+                    }
+
                     const sp = Math.hypot(this.vx, this.vy);
                     if (sp > MAX_SPEED * 1.6) {
                         this.vx = (this.vx / sp) * MAX_SPEED * 1.2;
@@ -459,23 +485,18 @@
                     }
 
                     this.life++;
-                    const margin = 120;
                     if (this.life > this.maxLife ||
-                        this.x < -margin || this.x > width + margin ||
-                        this.y < -margin || this.y > height + margin) {
+                        this.x < 0 || this.x > width ||
+                        this.y < 0 || this.y > height) {
                         this.reset(false);
                     }
                 }
 
                 draw() {
-                    const progress = this.life / this.maxLife;
-                    let alpha;
-                    if (progress < 0.15) {
-                        alpha = progress / 0.15;
-                    } else {
-                        alpha = 1 - (progress - 0.15) / 0.85;
-                    }
-                    alpha = Math.min(1, Math.max(0, alpha)) * 0.8;
+                    // 淡出基于到屏幕边缘的距离：中心最亮，靠近边缘才变淡
+                    const edgeDist = Math.min(this.x, this.y, width - this.x, height - this.y);
+                    let alpha = Math.min(1, Math.max(0, edgeDist / 100));
+                    alpha = alpha * 0.8;
 
                     ctx.beginPath();
                     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
@@ -526,7 +547,7 @@
 
             function updateSvgColors(isLightMode) {
                 const color = isLightMode ? '#000000' : '#ffffff';
-                
+
                 // 更新左上角图标
                 const iconPaths = topIconSvg.querySelectorAll('path');
                 iconPaths.forEach(path => {
