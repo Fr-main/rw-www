@@ -719,11 +719,17 @@
                 }
 
                 reset(init = false) {
-                    const centerX = width / 2;
-                    const centerY = height / 2;
-                    const spread = 40;
-                    this.x = centerX + (Math.random() - 0.5) * spread;
-                    this.y = centerY + (Math.random() - 0.5) * spread;
+                    if (init) {
+                        // 初始全屏随机散布：加载完成即已扩散满屏
+                        this.x = Math.random() * width;
+                        this.y = Math.random() * height;
+                    } else {
+                        const centerX = width / 2;
+                        const centerY = height / 2;
+                        const spread = 40;
+                        this.x = centerX + (Math.random() - 0.5) * spread;
+                        this.y = centerY + (Math.random() - 0.5) * spread;
+                    }
 
                     const angle = Math.random() * 2 * Math.PI;
                     const speed = MIN_SPEED + Math.random() * (MAX_SPEED - MIN_SPEED);
