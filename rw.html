@@ -878,6 +878,9 @@
             const hardcoreImg = document.getElementById('hardcoreImg');
 
             function updateHardcoreImage(isLightMode) {
+                // 文字(overlay)与图片反着来：
+                //   深色模式 -> 文字白色 -> 图片用黑底(yh.png)
+                //   浅色模式 -> 文字黑色 -> 图片用白底(yhw.png)
                 hardcoreImg.src = isLightMode ? 'yhw.png' : 'yh.png';
             }
 
