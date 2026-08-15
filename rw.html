@@ -885,6 +885,43 @@
             }
 
             toggleBtn.addEventListener('click', toggleTheme);
+
+            // ---- 与编辑器主题同步 ----
+            function syncThemeFromEditor() {
+                try {
+                    const themeSetting = localStorage.getItem('tw:theme');
+                    if (!themeSetting) return;
+                    let shouldBeLight = false;
+                    if (themeSetting === 'light') {
+                        shouldBeLight = true;
+                    } else if (themeSetting === 'dark') {
+                        shouldBeLight = false;
+                    } else {
+                        // JSON 格式，如 {"gui":"dark","accent":"#75C1C4"}
+                        try {
+                            const parsed = JSON.parse(themeSetting);
+                            shouldBeLight = parsed.gui === 'light';
+                        } catch (e) {
+                            return;
+                        }
+                    }
+                    // 仅在需要切换时调用
+                    if (isLightMode !== shouldBeLight) {
+                        toggleTheme();
+                    }
+                } catch (e) {
+                    // 忽略
+                }
+            }
+
+            syncThemeFromEditor();
+            // 其他标签页修改 localStorage 时同步
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'tw:theme') {
+                    syncThemeFromEditor();
+                }
+            });
+
             updateSvgColors(false);
             updateHardcoreImage(false);
 
