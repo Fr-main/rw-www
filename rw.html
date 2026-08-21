@@ -524,6 +524,152 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* ===== 下拉揭示规则 ===== */
+        /* 初始锁定：只显示标题（hero）与背景，禁止滚动 */
+        body.scroll-locked {
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* 标题区占满首屏并垂直居中 */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* 下方的板块初始隐藏，滚动进入视口时淡入 */
+        .reveal-section {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal-section.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 滚动提示（仅锁定状态下可见） */
+        .scroll-hint {
+            position: absolute;
+            bottom: 36px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            color: rgba(232, 237, 245, 0.45);
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            user-select: none;
+            animation: hintBob 2s ease-in-out infinite;
+            z-index: 5;
+        }
+
+        .scroll-hint .chevron {
+            width: 22px;
+            height: 22px;
+        }
+
+        body.light-mode .scroll-hint {
+            color: rgba(26, 29, 35, 0.4);
+        }
+
+        @keyframes hintBob {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(8px); }
+        }
+
+        /* 解锁后隐藏提示 */
+        body:not(.scroll-locked) .scroll-hint {
+            display: none;
+        }
+
+        /* ===== hero 入口按钮 ===== */
+        .hero-actions {
+            position: fixed;
+            left: 36px;
+            bottom: 44px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 0.9rem;
+            z-index: 20;
+        }
+
+        .hero-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.4rem;
+            border-radius: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(232, 237, 245, 0.92);
+            font-size: 0.92rem;
+            font-weight: 500;
+            font-family: inherit;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .hero-btn-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        .hero-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .hero-btn-primary {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        body.light-mode .hero-btn {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.12);
+            color: rgba(26, 29, 35, 0.85);
+        }
+
+        body.light-mode .hero-btn:hover {
+            background: rgba(0, 0, 0, 0.08);
+            border-color: rgba(0, 0, 0, 0.2);
+        }
+
+        body.light-mode .hero-btn-primary {
+            background: rgba(0, 0, 0, 0.1);
+            border-color: rgba(0, 0, 0, 0.25);
+        }
+
+        /* 移动端：按钮回到标题下方居中显示 */
+        @media (max-width: 768px) {
+            .hero-actions {
+                position: static;
+                justify-content: center;
+                margin-top: 2.2rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal-section {
+                transition: none;
+            }
+            .scroll-hint {
+                animation: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -596,9 +742,35 @@
             </svg>
 
             <div class="slogan">重构自由度</div>
+
+            <div class="hero-actions">
+                <a class="hero-btn hero-btn-primary" href="https://remixwarp.pages.dev/" target="_blank" rel="noopener">
+                    <svg class="hero-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                        <polyline points="15 3 21 3 21 9"/>
+                        <line x1="10" y1="14" x2="21" y2="3"/>
+                    </svg>
+                    在线编辑器
+                </a>
+                <a class="hero-btn" href="https://rw-desktop.pages.dev/docs/" target="_blank" rel="noopener">
+                    <svg class="hero-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    下载桌面端
+                </a>
+            </div>
+
+            <div class="scroll-hint" id="scrollHint" title="下拉探索更多">
+                <span>下拉探索</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 9l6 6 6-6"/>
+                </svg>
+            </div>
         </section>
 
-        <section class="showcase-section">
+        <section class="showcase-section reveal-section">
             <div class="showcase-title">✦ 特性预览 ✦</div>
             <div class="showcase-grid">
                 <div class="showcase-item">
@@ -653,7 +825,7 @@
             </div>
         </section>
 
-        <section class="hardcore-section">
+        <section class="hardcore-section reveal-section">
             <div class="hardcore-title">✦ 硬核编辑 ✦</div>
             <div class="hardcore-panel">
                 <div class="hardcore-image">
@@ -669,7 +841,7 @@
                 <a href="https://remixwarp.pages.dev/" target="_blank" rel="noopener noreferrer">编辑器</a>
                 <a href="https://github.com/remixwarp" target="_blank" rel="noopener noreferrer">GitHub</a>
             </div>
-            <div class="footer-random-quote" id="randomQuote" title="点击换一条">rw大舞台，敢发你就来 — DL_Grass</div>
+            <div class="footer-random-quote reveal-section" id="randomQuote" title="点击换一条">rw大舞台，敢发你就来 — DL_Grass</div>
             <div class="footer-copy">RemixWarp · 重构自由度</div>
         </footer>
 
@@ -959,6 +1131,65 @@
             }
 
             quoteElement.addEventListener('click', showRandomQuote);
+
+            // ---- 下拉揭示规则：初始只显示标题与背景，下拉才看到下方板块 ----
+            const scrollHint = document.getElementById('scrollHint');
+
+            function unlockScroll() {
+                if (!document.body.classList.contains('scroll-locked')) return;
+                document.body.classList.remove('scroll-locked');
+                // 解锁后，已处于视口的板块立即揭示
+                revealObserver && revealObserver.disconnect();
+                document.querySelectorAll('.reveal-section').forEach(function (s) {
+                    s.classList.add('revealed');
+                });
+                window.removeEventListener('wheel', onWheel, { passive: true });
+                window.removeEventListener('touchmove', onTouchMove, { passive: true });
+                window.removeEventListener('keydown', onKeydown);
+                if (scrollHint) scrollHint.removeEventListener('click', unlockScroll);
+            }
+
+            function onWheel(e) {
+                if (e.deltaY > 0) unlockScroll();
+            }
+            let touchStartY = 0;
+            function onTouchStart(e) { touchStartY = e.touches[0].clientY; }
+            function onTouchMove(e) {
+                if (touchStartY && e.touches[0].clientY < touchStartY - 20) unlockScroll();
+            }
+            function onKeydown(e) {
+                if (['ArrowDown', 'PageDown', 'Space', 'End'].includes(e.key)) unlockScroll();
+            }
+
+            // 初始锁定
+            document.body.classList.add('scroll-locked');
+
+            // 观察下方板块，进入视口时淡入
+            let revealObserver = null;
+            if ('IntersectionObserver' in window) {
+                revealObserver = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('revealed');
+                            revealObserver.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.12 });
+                document.querySelectorAll('.reveal-section').forEach(function (s) {
+                    revealObserver.observe(s);
+                });
+            } else {
+                document.querySelectorAll('.reveal-section').forEach(function (s) {
+                    s.classList.add('revealed');
+                });
+            }
+
+            // 绑定解锁触发
+            window.addEventListener('wheel', onWheel, { passive: true });
+            window.addEventListener('touchstart', onTouchStart, { passive: true });
+            window.addEventListener('touchmove', onTouchMove, { passive: true });
+            window.addEventListener('keydown', onKeydown);
+            if (scrollHint) scrollHint.addEventListener('click', unlockScroll);
 
         })();
     </script>
