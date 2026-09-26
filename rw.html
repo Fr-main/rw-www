@@ -160,6 +160,18 @@
             transition: transform 0.3s ease, filter 0.5s ease;
         }
 
+        /* 文字 LOGO 描边色：默认跟随主题反向 */
+        .logo-text-svg g,
+        .logo-text-svg path {
+            stroke: #ffffff;
+            transition: stroke 0.5s ease;
+        }
+
+        body.light-mode .logo-text-svg g,
+        body.light-mode .logo-text-svg path {
+            stroke: #000000;
+        }
+
         .slogan {
             margin-top: 1.2rem;
             font-size: clamp(1rem, 2.5vw, 1.8rem);
@@ -565,8 +577,8 @@
     <div class="main-wrapper">
 
         <section class="hero-section">
-            <!-- 文字标识 - RemixWarp logo -->
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="117.73557" height="8.92521" viewBox="0,0,117.73557,8.92521"><g transform="translate(-180.9488,-175.8005)"><g fill="none" stroke="#000000" stroke-miterlimit="10"><path d="M192.42004,183.49786l-10.97124,-0.05353v-7.04529h9.07898" stroke-linejoin="miter"/><path d="M192.76091,183.64566l-4.36304,-4.43021l2.50502,-3.00744" stroke-linejoin="miter"/><path d="M183.12834,180.20034v-1.71525" stroke-linejoin="miter"/><path d="M185.12511,180.17711v-1.71525" stroke-linejoin="miter"/><path d="M205.03686,183.4738l-10.03531,-0.05353v-7.0453h10.02878" stroke-linejoin="miter"/><path d="M204.26748,179.95598h-7.98773" stroke-linejoin="miter"/><path d="M207.8441,183.94359l-0.0351,-7.50181l10.36667,0.01451l-0.04007,7.49704" stroke-linejoin="miter"/><path d="M212.94713,183.37569l0.03191,-5.97125" stroke-linejoin="miter"/><path d="M220.99028,176.42107h3.99333v7.02761h-3.97884" stroke-linejoin="miter"/><path d="M228.96249,183.45038h-3.97883v-7.02761l3.99332,0.02562" stroke-linejoin="miter"/><path d="M231.01224,176.45035h4.97979v7.02761h-0.15623" stroke-linejoin="miter"/><path d="M234.28332,183.47796h-3.25301" stroke-linejoin="miter"/><path d="M240.95379,183.47966h-4.9617v-7.02761l0.20197,0.00104" stroke-linejoin="miter"/><path d="M240.97185,176.47767l-2.95212,-0.01519" stroke-linejoin="miter"/><path d="M255.84981,175.86155l0.04007,7.49704l-10.36667,0.01452l0.0351,-7.50181" stroke-linejoin="miter"/><path d="M250.66133,176.4392l0.03191,5.97125" stroke-linejoin="miter"/><path d="M258.66068,183.66675l5.99406,-7.55271l6.05098,7.51633" stroke-linejoin="bevel"/><g stroke-linejoin="miter"><path d="M284.40326,183.43393l-10.97123,-0.05353v-7.0453h9.07898"/><path d="M284.77585,183.58173l-4.36304,-4.43021l2.50502,-3.00744"/></g><path d="M287.62851,183.83656l0.00113,-7.39409l10.55288,-0.02437l-0.02256,6.11864" stroke-linejoin="miter"/><path d="M287.33304,184.27179l6.68793,-3.08907l4.46357,1.81513" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><g stroke-linejoin="miter"><path d=""/><path d=""/></g><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/></g></g></svg>
+            <!-- 文字标识 - RemixWarp logo（补上 class 与 id，让它能被 CSS 和 JS 接管） -->
+            <svg id="logoSvg" class="logo-text-svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0,0,117.73557,8.92521" role="img" aria-label="RemixWarp"><g transform="translate(-180.9488,-175.8005)"><g fill="none" stroke="#000000" stroke-miterlimit="10"><path d="M192.42004,183.49786l-10.97124,-0.05353v-7.04529h9.07898" stroke-linejoin="miter"/><path d="M192.76091,183.64566l-4.36304,-4.43021l2.50502,-3.00744" stroke-linejoin="miter"/><path d="M183.12834,180.20034v-1.71525" stroke-linejoin="miter"/><path d="M185.12511,180.17711v-1.71525" stroke-linejoin="miter"/><path d="M205.03686,183.4738l-10.03531,-0.05353v-7.0453h10.02878" stroke-linejoin="miter"/><path d="M204.26748,179.95598h-7.98773" stroke-linejoin="miter"/><path d="M207.8441,183.94359l-0.0351,-7.50181l10.36667,0.01451l-0.04007,7.49704" stroke-linejoin="miter"/><path d="M212.94713,183.37569l0.03191,-5.97125" stroke-linejoin="miter"/><path d="M220.99028,176.42107h3.99333v7.02761h-3.97884" stroke-linejoin="miter"/><path d="M228.96249,183.45038h-3.97883v-7.02761l3.99332,0.02562" stroke-linejoin="miter"/><path d="M231.01224,176.45035h4.97979v7.02761h-0.15623" stroke-linejoin="miter"/><path d="M234.28332,183.47796h-3.25301" stroke-linejoin="miter"/><path d="M240.95379,183.47966h-4.9617v-7.02761l0.20197,0.00104" stroke-linejoin="miter"/><path d="M240.97185,176.47767l-2.95212,-0.01519" stroke-linejoin="miter"/><path d="M255.84981,175.86155l0.04007,7.49704l-10.36667,0.01452l0.0351,-7.50181" stroke-linejoin="miter"/><path d="M250.66133,176.4392l0.03191,5.97125" stroke-linejoin="miter"/><path d="M258.66068,183.66675l5.99406,-7.55271l6.05098,7.51633" stroke-linejoin="bevel"/><g stroke-linejoin="miter"><path d="M284.40326,183.43393l-10.97123,-0.05353v-7.0453h9.07898"/><path d="M284.77585,183.58173l-4.36304,-4.43021l2.50502,-3.00744"/></g><path d="M287.62851,183.83656l0.00113,-7.39409l10.55288,-0.02437l-0.02256,6.11864" stroke-linejoin="miter"/><path d="M287.33304,184.27179l6.68793,-3.08907l4.46357,1.81513" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><g stroke-linejoin="miter"><path d=""/><path d=""/></g><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/><path d="" stroke-linejoin="miter"/></g></g></svg>
 
             <div class="slogan">重构自由度</div>
         </section>
@@ -770,48 +782,38 @@
             // 获取左上角图标和文字SVG
             const topIconSvg = document.querySelector('.top-left-icon svg');
             const textLogoSvg = document.getElementById('logoSvg');
+            const hardcoreImg = document.getElementById('hardcoreImg');
+
+            // 统一给 SVG 内部带 stroke 的元素换色（做空值保护，避免报错中断后续脚本）
+            function paintSvg(svg, color) {
+                if (!svg) return;
+                svg.querySelectorAll('path, g, line, polyline, polygon, circle, rect, ellipse').forEach(el => {
+                    if (el.hasAttribute('stroke')) {
+                        el.setAttribute('stroke', color);
+                    }
+                });
+            }
 
             function updateSvgColors(isLightMode) {
                 const color = isLightMode ? '#000000' : '#ffffff';
-                
-                // 更新左上角图标
-                const iconPaths = topIconSvg.querySelectorAll('path');
-                iconPaths.forEach(path => {
-                    if (path.hasAttribute('stroke')) {
-                        path.setAttribute('stroke', color);
-                    }
-                });
-                const iconGroups = topIconSvg.querySelectorAll('g');
-                iconGroups.forEach(g => {
-                    if (g.hasAttribute('stroke')) {
-                        g.setAttribute('stroke', color);
-                    }
-                });
+                paintSvg(topIconSvg, color);   // 左上角图标
+                paintSvg(textLogoSvg, color);  // 中间文字 LOGO
+            }
 
-                // 更新文字标识
-                const textPaths = textLogoSvg.querySelectorAll('path');
-                textPaths.forEach(path => {
-                    if (path.hasAttribute('stroke')) {
-                        path.setAttribute('stroke', color);
-                    }
-                });
-                const textGroups = textLogoSvg.querySelectorAll('g');
-                textGroups.forEach(g => {
-                    if (g.hasAttribute('stroke')) {
-                        g.setAttribute('stroke', color);
-                    }
-                });
+            function updateHardcoreImage(isLightMode) {
+                if (!hardcoreImg) return;
+                hardcoreImg.src = isLightMode ? 'yhw.png' : 'yh.png';
             }
 
             let isLightMode = false;
 
             function toggleTheme() {
                 isLightMode = !isLightMode;
-                
+
                 body.classList.toggle('light-mode', isLightMode);
                 updateSvgColors(isLightMode);
                 updateHardcoreImage(isLightMode);
-                
+
                 if (isLightMode) {
                     moonIcon.style.display = 'none';
                     sunIcon.style.display = 'block';
@@ -819,12 +821,6 @@
                     moonIcon.style.display = 'block';
                     sunIcon.style.display = 'none';
                 }
-            }
-
-            const hardcoreImg = document.getElementById('hardcoreImg');
-
-            function updateHardcoreImage(isLightMode) {
-                hardcoreImg.src = isLightMode ? 'yhw.png' : 'yh.png';
             }
 
             toggleBtn.addEventListener('click', toggleTheme);
