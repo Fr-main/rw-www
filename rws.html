@@ -91,14 +91,14 @@
             justify-content: space-between;
         }
 
-        /* 左上角图标 */
+        /* 左上角缩小版 Logo */
         .top-left-icon {
             position: fixed;
             top: 2rem;
             left: 2rem;
             z-index: 10;
-            width: 48px;
-            height: 48px;
+            width: 100px;
+            height: auto;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -106,19 +106,14 @@
         }
 
         .top-left-icon svg {
-            width: 40px;
+            width: 100%;
             height: auto;
             display: block;
             transition: all 0.5s ease;
         }
 
         .top-left-icon svg path {
-            stroke: #ffffff;
-            transition: stroke 0.5s ease;
-        }
-
-        body.light-mode .top-left-icon svg path {
-            stroke: #000000;
+            transition: fill 0.5s ease, stroke 0.5s ease;
         }
 
         /* 右上角主题切换 - 带圆角矩形背景 */
@@ -285,11 +280,7 @@
             .top-left-icon {
                 top: 1rem;
                 left: 1rem;
-                width: 36px;
-                height: 36px;
-            }
-            .top-left-icon svg {
-                width: 30px;
+                width: 70px;
             }
             .theme-toggle-wrapper {
                 top: 1rem;
@@ -323,6 +314,50 @@
 
     <canvas id="particle-canvas"></canvas>
 
+    <!-- 左上角缩小版 Logo -->
+    <div class="top-left-icon">
+        <svg viewBox="0,0,540.83939,100.5" preserveAspectRatio="xMidYMid meet">
+            <g transform="translate(31.08939,-129.25)">
+                <g fill="#000000" stroke="#000000" stroke-width="0.5" stroke-linejoin="round" stroke-miterlimit="10">
+                    <path d="M19.5,129.5h50l-50,50z"></path>
+                    <path d="M69.5,129.5v50h-50z"></path>
+                    <path d="M69.5,229.5h-50v-50z"></path>
+                    <path d="M-30.5,129.5h50v50z"></path>
+                    <g>
+                        <path d="M129.5,129.5h50l-50,50z"></path>
+                        <path d="M179.5,129.5v50h-50z"></path>
+                        <path d="M179.5,229.5h-50v-50z"></path>
+                        <path d="M129.5,229.5h-50l50,-50z"></path>
+                        <path d="M79.5,229.5v-50h50z"></path>
+                        <path d="M79.5,179.5v-50l50,50z"></path>
+                        <path d="M79.5,129.5h50v50z"></path>
+                    </g>
+                    <g>
+                        <path d="M239.5,129.5h50l-50,50z"></path>
+                        <path d="M289.5,129.5v50h-50z"></path>
+                        <path d="M289.5,179.5v50l-50,-50z"></path>
+                        <path d="M189.5,229.5v-50h50z"></path>
+                        <path d="M189.5,179.5v-50l50,50z"></path>
+                        <path d="M189.5,129.5h50v50z"></path>
+                    </g>
+                    <g>
+                        <path d="M349.5,129.5h50l-50,50z"></path>
+                        <path d="M399.5,129.5v50h-50z"></path>
+                        <path d="M399.5,179.5v50l-50,-50z"></path>
+                        <path d="M399.5,229.5h-50v-50z"></path>
+                        <path d="M299.5,129.5h50v50z"></path>
+                    </g>
+                    <g>
+                        <path d="M509.5,129.5v50h-50z"></path>
+                        <path d="M509.5,179.5v50l-50,-50z"></path>
+                        <path d="M409.5,229.5v-50h50z"></path>
+                        <path d="M409.5,179.5v-50l50,50z"></path>
+                    </g>
+                    <path d="M-30.83938,179.30487h50v50z"></path>
+                </g>
+            </g>
+        </svg>
+    </div>
 
     <!-- 右上角主题切换 - 带圆角矩形背景 -->
     <div class="theme-toggle-wrapper">
@@ -389,7 +424,6 @@
                     </g>
                 </g>
             </svg>
-            <!--rotationCenter:271.089385:50.75-->
 
             <div class="slogan">
                 <span class="quote">"</span>人民世界人民造，重构世界为人民<span class="quote">"</span>
@@ -526,56 +560,46 @@
             const sunIcon = document.getElementById('sunIcon');
             const body = document.body;
 
-            // 获取左上角图标和文字SVG
-            const topIconSvg = document.querySelector('.top-left-icon svg');
+            // 获取中心 Logo 和左上角缩小版 Logo
             const textLogoSvg = document.getElementById('logoSvg');
+            const topLogoSvg = document.querySelector('.top-left-icon svg');
 
             function updateSvgColors(isLightMode) {
                 const color = isLightMode ? '#000000' : '#ffffff';
-                
-                // 更新左上角图标
-                const iconPaths = topIconSvg.querySelectorAll('path');
-                iconPaths.forEach(path => {
-                    if (path.hasAttribute('stroke')) {
-                        path.setAttribute('stroke', color);
-                    }
-                });
-                const iconGroups = topIconSvg.querySelectorAll('g');
-                iconGroups.forEach(g => {
-                    if (g.hasAttribute('stroke')) {
-                        g.setAttribute('stroke', color);
-                    }
-                });
 
-                // 更新文字标识
-                const textPaths = textLogoSvg.querySelectorAll('path');
-                textPaths.forEach(path => {
-                    if (path.hasAttribute('stroke')) {
-                        path.setAttribute('stroke', color);
-                    }
-                    if (path.hasAttribute('fill')) {
-                        path.setAttribute('fill', color);
-                    }
-                });
-                const textGroups = textLogoSvg.querySelectorAll('g');
-                textGroups.forEach(g => {
-                    if (g.hasAttribute('stroke')) {
-                        g.setAttribute('stroke', color);
-                    }
-                    if (g.hasAttribute('fill')) {
-                        g.setAttribute('fill', color);
-                    }
-                });
+                // 更新中心 Logo
+                if (textLogoSvg) {
+                    textLogoSvg.querySelectorAll('path').forEach(path => {
+                        if (path.hasAttribute('fill')) path.setAttribute('fill', color);
+                        if (path.hasAttribute('stroke')) path.setAttribute('stroke', color);
+                    });
+                    textLogoSvg.querySelectorAll('g').forEach(g => {
+                        if (g.hasAttribute('fill')) g.setAttribute('fill', color);
+                        if (g.hasAttribute('stroke')) g.setAttribute('stroke', color);
+                    });
+                }
+
+                // 更新左上角缩小版 Logo
+                if (topLogoSvg) {
+                    topLogoSvg.querySelectorAll('path').forEach(path => {
+                        if (path.hasAttribute('fill')) path.setAttribute('fill', color);
+                        if (path.hasAttribute('stroke')) path.setAttribute('stroke', color);
+                    });
+                    topLogoSvg.querySelectorAll('g').forEach(g => {
+                        if (g.hasAttribute('fill')) g.setAttribute('fill', color);
+                        if (g.hasAttribute('stroke')) g.setAttribute('stroke', color);
+                    });
+                }
             }
 
             let isLightMode = false;
 
             function toggleTheme() {
                 isLightMode = !isLightMode;
-                
+
                 body.classList.toggle('light-mode', isLightMode);
                 updateSvgColors(isLightMode);
-                
+
                 if (isLightMode) {
                     moonIcon.style.display = 'none';
                     sunIcon.style.display = 'block';
